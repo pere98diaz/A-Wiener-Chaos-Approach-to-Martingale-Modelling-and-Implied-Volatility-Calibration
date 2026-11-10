@@ -1,0 +1,22 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the accompanying paper."
+type: software
+title: "Wiener chaos pricing"
+authors:
+  - family-names: Diaz-Lozano
+    given-names: Pere
+  - family-names: Kloster
+    given-names: Thomas K.
+license: MIT
+preferred-citation:
+  type: article
+  title: "A Wiener Chaos Approach to Martingale Modelling and Implied Volatility Calibration"
+  authors:
+    - family-names: Diaz-Lozano
+      given-names: Pere
+    - family-names: Kloster
+      given-names: Thomas K.
+  year: 2026
+  journal: arXiv
+  doi: "10.48550/arXiv.2602.16232"
+  url: "https://arxiv.org/abs/2602.16232"

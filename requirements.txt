@@ -1,0 +1,13 @@
+# Tested with CPython 3.11.14 on Linux x86_64.
+# Install the CPU or CUDA build of torch first, as described in README.md.
+numpy==2.3.5
+scipy==1.17.0
+torch==2.5.1
+pandas==3.0.0
+matplotlib==3.10.8
+tqdm==4.67.1
+pymittagleffler==0.1.8
+nbformat==5.10.4
+ipython==9.9.0
+ipykernel==7.1.0
+jupyterlab==4.5.3

@@ -1,0 +1,15 @@
+# Only the SPX workflow source is public. All inputs and generated artifacts
+# remain private, including files with extensions not covered by the root rules.
+/*
+!/.gitignore
+!/Data.ipynb
+!/Plots.ipynb
+!/Legendre/
+!/Piecewise constant/
+/Legendre/*
+!/Legendre/Calibration.ipynb
+!/Legendre/Calibration study.ipynb
+!/Legendre/Calibration time analysis.ipynb
+/Piecewise constant/*
+!/Piecewise constant/Calibration.ipynb
+!/Piecewise constant/Calibration study.ipynb
