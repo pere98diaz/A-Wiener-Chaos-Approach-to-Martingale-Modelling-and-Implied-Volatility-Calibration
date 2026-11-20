@@ -1,0 +1,206 @@
+HISTORICAL AUDIT: this report describes the archive before the matched-count
+update requested later on 20 November 2026. See matched-mc-counts-update.txt
+for the revised evaluation results, plots and LaTeX tables.
+
+LaTeX / Python consistency audit — 20 November 2026
+
+Archive: Wiener_chaos_expansion_pricing.zip
+SHA-256: f9dbccde5e6d18d8a2ec61596914db63fc0be80c8ed636f57630ebf312423479
+Extracted working copy: /tmp/wiener-latex-audit-9jg__y1l
+The archive and existing project files were not edited.
+
+Conclusion
+
+The active manuscripts, main.tex and submission.tex, agree on their mathematical
+model, numerical settings, results tables, and figure-caption errors. The reported
+numbers agree with the Python project and all 600 saved study calibrations.
+The submission package has an outdated cover letter and an unfilled date field.
+There are also two small wording/reproducibility improvements described below.
+
+Findings
+
+1. Update the cover letter's description of the model.
+   File inside archive: submission_stuff/cover_letter.tex:15 and :21.
+
+   The letter says the target class is "all mean-square integrable martingales"
+   and describes approximating the terminal price itself by a chaos expansion.
+   The active manuscript instead models S_T = S_0 X_theta^2, normalizes
+   E[X_theta^2] = 1, and proves terminal-L1 universality for integrable,
+   nonnegative Brownian martingales. Square integrability of the target terminal
+   PRICE is unnecessary, and arbitrary signed martingales are outside this class.
+   The chaos expansion approximates sqrt(S_T/S_0), rather than S_T itself.
+
+   Suggested replacement for the model-description portion of paragraph 2:
+   "Assuming Brownian noise, we construct nonnegative martingale models from the
+   normalized square of a finite Wiener chaos expansion. The resulting class is
+   universal in terminal L1 among integrable nonnegative Brownian martingales.
+   We approximate the square root of the normalized terminal price and recover
+   the intermediate price process by conditional expectation. The Hermite
+   polynomial representation yields explicit conditional-square formulas for
+   efficient calibration to option prices."
+
+   Replace the "main constraint being mean-square integrability" wording in the
+   first contribution with the integrability and nonnegativity assumptions above.
+
+2. Soften the cover letter's fit claims.
+   File inside archive: submission_stuff/cover_letter.tex:17.
+
+   "Essentially exact calibration" and "essentially perfect fit" overstate the
+   numerical results. Across studies, calibration MAEs are about 4–10 volatility
+   basis points; SPX study means are 8.86 and 10.29 bps. The recorded fraction of
+   SPX fits inside the quoted bid-ask interval averages 56.71% and 46.82%,
+   respectively. These support "accurate fits" or "close fits", without implying
+   exact reproduction or that essentially all fitted values are within the
+   observed spreads. The active manuscripts already use more measured wording.
+
+3. Complete or remove the submission date placeholder.
+   File inside archive: submission_stuff/ex_shared.tex:40.
+
+   "Submitted to the editors DATE." appears literally in the compiled SIAM PDF.
+   The actual submission date cannot be inferred from the project.
+
+4. Qualify the rough-Heston memory statement (minor).
+   File inside archive: main.tex:1140; submission.tex:1119.
+
+   The paragraph permits alpha = 1 and correctly says that this gives classical
+   Heston, but immediately says "The kernel introduces memory into the variance
+   process, so the model is no longer Markovian." Qualify this by alpha < 1:
+   "For alpha < 1, the kernel introduces memory into the variance process, so
+   the model is no longer Markovian."
+
+5. State the training Monte Carlo budgets explicitly (reproducibility improvement).
+   File inside archive: main.tex:1369 and the following pricing tables;
+   corresponding appendix in submission.tex.
+
+   The appendix correctly identifies its budgets as independent EVALUATION
+   budgets. These are not always the budgets used inside the optimizer:
+   - Rough Heston / Legendre: 2M training paths versus 4M evaluation paths at
+     the shortest calibration maturity.
+   - SPX / piecewise constant: 400k training versus 200k evaluation paths at
+     maturities 3–4, and 200k training versus 100k evaluation paths at 5–10.
+   - SPX / Legendre: 400k training versus 200k evaluation paths at maturities
+     1–4, and 200k training versus 100k evaluation paths at 5–10.
+   These are omissions, not incorrect entries in the present evaluation tables.
+   The other training allocations match the stated evaluation allocations.
+
+Verified numerical settings
+
+Heston:
+  S0=100, kappa=1.5, vbar=0.04, epsilon=0.5, rho=-0.7, V0=0.04, r=q=0.
+  Horizon 1.974; d=2; total order P=2.
+  Piecewise: M=7, grid zero plus the seven calibration maturities.
+  Legendre: M=10 per driver.
+  Coefficients: 120 and 231; normalized continuous dimensions: 119 and 230.
+  Calibration grid: seven maturities, nine strikes 80–120.
+  Test grid: six additional maturities.
+
+Rough Heston:
+  Same shared parameters; alpha=0.55; H=alpha-1/2=0.05; r=q=0.
+  Horizon 1.5; d=2; M=10; total order P=3 for both bases.
+  Piecewise: normalized interval indicators on the nonuniform grid defined
+  by zero and the ten calibration maturities.
+  Coefficients: 1771; normalized continuous dimension: 1770.
+  Calibration grid: ten maturities, nine strikes 80–120.
+  Test grid: seven additional maturities.
+
+SPX:
+  Local raw input has 188 calls, date 2022-08-24, ten maturities.
+  Preprocessing rescales the index level 4140.77 to S0=100.
+  Horizon 1.30868; d=2; M=10; total order P=3 for both bases.
+  Piecewise grid: zero plus the ten calibration maturities.
+  Coefficients: 1771; normalized continuous dimension: 1770.
+  Rates vary by maturity; dividend yield is constant at 0.01425.
+
+Independent recomputation from all saved run records
+
+Numbers are mean +/- sample standard deviation across 100 runs per row.
+Errors are volatility basis points; total time includes initialization and fit.
+
+Dataset       Basis       Calibration MAE   Test MAE       Total seconds
+Heston        Piecewise   4.08 +/- 0.64     10.80 +/- 0.83 17.26 +/- 2.74
+Heston        Legendre    5.44 +/- 0.91      5.71 +/- 0.93 19.93 +/- 3.17
+Rough Heston  Piecewise   5.36 +/- 1.02     17.98 +/- 1.90 61.27 +/- 11.01
+Rough Heston  Legendre   10.26 +/- 1.72      9.22 +/- 1.40 95.29 +/- 29.92
+SPX           Piecewise   8.86 +/- 0.60         —         85.65 +/- 12.60
+SPX           Legendre   10.29 +/- 0.68         —        116.83 +/- 11.37
+
+All entries match the manuscript after rounding. All saved coefficient vectors
+have the stated lengths. The largest deviation of their squared chaos norm
+from one is 2.67e-7, consistent with the float32 calculation.
+
+Figure-caption MAEs, independently recomputed
+
+Heston, run 076:
+  Calibration: 4.34 / 5.18 bps (piecewise / Legendre).
+  Test:       10.29 / 5.20 bps.
+Rough Heston, run 076:
+  Calibration: 5.27 / 8.87 bps.
+  Test:       18.50 / 8.51 bps.
+SPX, run 005:
+  Calibration: 8.74 / 10.69 bps.
+All agree with the captions.
+
+The rough-Heston Legendre shortest-test-maturity evaluation is confirmed by
+saved post-evaluation metadata: 20M paths in five batches of 4M, at T=0.02.
+The original study manifest records the older 4M allocation; the aggregate and
+individual run records carry the later evaluation metadata and updated prices.
+The manuscript describes the updated evaluation correctly.
+
+Archive figures
+
+All 22 Heston and SPX PDFs are byte-identical to the corresponding project
+paper-plot PDFs. The nine rough-Heston PDFs are different exports: their layout
+and some displayed ticks differ from the local copies. Text extraction and a
+rendered shortest-maturity comparison show export/layout differences; their
+caption MAEs agree with the stored run values. This audit does not claim a
+complete recovery of every numerical point embedded in those PDFs.
+
+Calibration and formula checks
+
+Verified against source and recorded configurations:
+  - Hermite convention H_n = He_n/n!, derivative H_n'=H_(n-1).
+  - Coefficient normalization sum_a d_a^2/a! = 1.
+  - Piecewise normalized indicators and Brownian increment convention.
+  - Shifted, normalized Legendre family.
+  - Vega weights 1/Vega^2; mean versus sum changes only a fixed objective scale.
+  - AdamW, zero weight decay, initial learning rate 1e-4.
+  - Iteration caps, plateau scheduler, stopping tolerances and patience.
+  - Paths refreshed every 50 iterations; degree-2 controls use the pricing sample.
+  - Checkpoint selection by monitored training loss within the stated tolerance.
+  - Separate Monte Carlo samples for reported evaluation.
+  - Evaluation path budgets and Gauss-Hermite node counts in all five tables.
+  - Heston exotic payoff definitions, forward start dates and monitoring step.
+
+Independent numerical checks, CPU float64, without rerunning calibrations:
+  - Both bases, P=2 and P=3, two drivers and two time functions.
+  - Four observation times, including a piecewise grid boundary and the horizon.
+  - Conditional-square values compared with direct exact Gaussian quadrature of
+    the squared Hermite polynomial.
+  - First and second stock moments compared with exact Gaussian quadrature.
+  - All three manuscript Black-Scholes exotic formulas compared with project
+    pricing functions for zero, positive and negative carry.
+All checks passed. These are focused numerical checks, not a formal proof audit
+or a complete rerun of the paper's Monte Carlo studies.
+
+LaTeX integrity and version agreement
+
+Both active manuscripts build successfully using latexmk with shell escape
+disabled: main.pdf has 33 pages; submission.pdf has 30 pages.
+No undefined references/citations or duplicate labels remain.
+All 31 included graphics exist; all 34 cited bibliography keys exist.
+After normalizing citation syntax, the scientific body agrees between versions.
+Differences are figure scaling and funding placement (body versus title footnote).
+The SIAM build reports small overfull vboxes and a caption/class compatibility
+warning; the article build has one small overfull hbox. No build errors occur.
+
+Old_things/ contains explicitly historical manuscripts and figures. These are
+not dependencies of the active builds and were not treated as current claims.
+External literature claims and bibliography metadata were not independently
+re-researched. The OptionMetrics source attribution cannot be proven from a
+CSV alone, although its date, quote count and numeric fields agree with the text.
+
+Audit scripts and build logs are in the extracted working directory:
+  check_formulas.py
+  check_saved_results.py
+  main.build.log / main.log / main.blg
+  submission.build.log / submission.log / submission.blg

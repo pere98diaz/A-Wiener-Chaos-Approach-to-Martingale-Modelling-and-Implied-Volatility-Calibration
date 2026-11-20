@@ -212,7 +212,7 @@ def save_spx_spread_smile(strikes, bid_iv, ask_iv, model_ivs, labels, s0, path,
 
     fig, ax = plt.subplots(figsize=(6, 4))
     ax.fill_between(x, bid, ask, color="gray", alpha=0.25,
-                    linewidth=0, label="Reference", zorder=1)
+                    linewidth=0, label="Market bid-ask", zorder=1)
     for i, (iv, label) in enumerate(zip(fitted, labels)):
         ax.plot(x, iv[order], linestyle="none", marker=MODEL_MARKERS[i % 2],
                 markerfacecolor="none", markeredgecolor=MODEL_COLORS[i % 2],

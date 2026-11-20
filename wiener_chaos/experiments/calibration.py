@@ -733,14 +733,14 @@ def plot_spx_smiles(data, fitted_ivs):
         forward = data["S0"] * np.exp((r - q) * T)
         x = np.log(np.asarray(strikes) / forward)
         ax.fill_between(x, 100 * np.asarray(bid), 100 * np.asarray(ask),
-                        alpha=.25, label="Market bid/ask")
+                        alpha=.25, label="Market bid-ask")
         ax.plot(x, 100 * np.asarray(market), ".", label="Market IV")
         ax.plot(x, 100 * np.asarray(fitted, dtype=float), "-", label="Calibrated chaos")
         ax.set(title=f"T = {T:g}", xlabel="log(K / forward)", ylabel="Implied volatility (%)")
     for ax in list(axes.flat)[len(data["maturities"]):]:
         ax.set_visible(False)
     axes.flat[0].legend()
-    fig.suptitle("SPX calibration against market bid/ask")
+    fig.suptitle("SPX calibration against Market bid-ask")
     fig.tight_layout()
     plt.show()
     return fig

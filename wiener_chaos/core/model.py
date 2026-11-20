@@ -1456,7 +1456,7 @@ class ModelStock:
                     facecolor="royalblue",
                     alpha=0.55,
                     edgecolor="none",
-                    label="Bid-Ask Spread",
+                    label="Market bid-ask",
                 )
                 all_handles.append(band_handle)
 
@@ -1510,7 +1510,7 @@ class ModelStock:
                     color="royalblue",
                     alpha=0.55,
                     zorder=1,
-                    label="Bid-Ask Spread",
+                    label="Market bid-ask",
                 )
 
             # Market: markers only, no line

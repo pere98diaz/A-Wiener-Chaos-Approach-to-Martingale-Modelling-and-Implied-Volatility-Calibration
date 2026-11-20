@@ -95,6 +95,8 @@ Study manifests retain source and data fingerprints. Incompatible runs use a sep
 
 New source fingerprints ignore comments, formatting, and docstrings while retaining executable code. The existing exotic-price cache and SPX timing reference retain their original hashes alongside an explicit archived-source audit of the reorganized code. Changes to numerical code still invalidate those checks; data and experiment settings are checked separately.
 
+At calibration maturities, optimization and independent final evaluation use the same path counts; evaluation uses separate random draws. The affected saved studies have been independently re-evaluated with these counts while retaining their fitted coefficients and original calibration timings. Evaluation metadata records this separately from the original calibration manifests.
+
 The paper plots use study run 76 for Heston and Rough Heston, and run 5 for SPX. The Rough Heston Legendre study and matching single fit include the 20-million-path evaluation at the shortest held-out maturity; evaluation batches contain at most 4 million paths.
 
 Paper figures are saved under `Heston/Plots/`, `Rough Heston/Plots/`, and `Real data/Plots/`. `Real data/Legendre/Calibration time analysis.ipynb` analyses the saved timing windows. Individual SPX piecewise bid/ask smiles are saved under `single/figures/smiles/`.

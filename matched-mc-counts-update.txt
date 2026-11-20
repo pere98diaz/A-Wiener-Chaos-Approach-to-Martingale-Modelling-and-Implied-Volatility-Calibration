@@ -1,0 +1,107 @@
+Matched optimization and independent-evaluation path counts
+20 November 2026
+
+Completed changes
+
+Optimization and post-calibration evaluation now use the same per-maturity
+Monte Carlo path counts. Evaluation still uses independent random samples.
+The evaluation count list is copied from the optimization count list in the
+individual and study notebooks, avoiding separately maintained allocations.
+
+Shared counts at calibration maturities:
+  Rough Heston / Legendre:
+    [2M, 1M, 200k, 200k, 100k, 100k, 100k, 100k, 100k, 100k].
+  SPX / piecewise constant:
+    [quadrature, quadrature, 400k, 400k, 200k, 200k, 200k, 200k, 200k, 200k].
+    Quadrature retains 40 and 25 nodes per dimension.
+  SPX / Legendre:
+    [400k, 400k, 400k, 400k, 200k, 200k, 200k, 200k, 200k, 200k].
+
+The optimization allocations already had these values. The fitted coefficients,
+initial coefficients, optimizer iterations, monitored training losses, and
+original recorded timings were retained. No new optimization was required.
+Independent calibration-surface prices and implied volatilities were recomputed
+for all 300 affected study runs and the three individual fits, using fixed
+independent evaluation seed 5000042. Individual initial-model evaluations were
+also refreshed where stored. Held-out prices and errors were retained.
+
+Fresh evaluations ran on CPU using torch 2.4.1+cu121 and numpy 1.24.4.
+Each result's calibration_evaluation metadata records the actual versions,
+path counts, seed, device, source fingerprints, original error, and evaluation
+time. Original calibration identities and source provenance remain in the
+manifests, alongside the explicit subsequent evaluation metadata.
+
+Updated 100-run calibration MAEs (volatility basis points, mean +/- sample std):
+                                      Previous          Updated
+  Rough Heston / Legendre              10.26 +/- 1.72   11.88 +/- 8.65
+  SPX / piecewise constant              8.86 +/- 0.60    8.03 +/- 0.53
+  SPX / Legendre                       10.29 +/- 0.68    9.76 +/- 0.59
+
+Updated selected-run MAEs used by the paper plots:
+  Rough Heston / Legendre, run 076: 7.70 bps.
+  SPX / piecewise constant, run 005: 8.31 bps.
+  SPX / Legendre, run 005: 9.93 bps.
+
+Observed rough-Heston tail-sampling noise
+
+At the shortest calibrated maturity, T=0.019178, the independent 2-million-path
+sample gives a zero price for K=120 in 7 of the 100 Legendre runs: 28, 32, 63,
+74, 77, 93, and 95. These imply zero estimated implied volatility for that quote
+and increase the aggregate MAE and its standard deviation. All seven observations
+are included in the reported statistics. No prices or errors were discarded,
+replaced, or assigned a different evaluation seed.
+
+A direct check of runs 28 and 74 confirmed that none of the 2 million sampled
+terminal prices exceeded 120 (sample maxima 118.52857 and 116.70252). These are
+zero Monte Carlo estimates from rare exercise events, not a claim that the
+model's exact option price or exact implied volatility is zero. The manuscript
+caption and the rough-Heston study notebook explicitly report the seven cases.
+The user chose to retain 2 million paths and report this noise.
+
+Refreshed artifacts
+
+  - Six affected calibration / study notebooks and their sampling descriptions.
+  - All affected individual and study JSON result records and evaluation metadata.
+  - Study summary tables, sampling-variability tables, and study summary plots.
+  - Individual-fit summary tables and plots, including SPX piecewise bid-ask smiles.
+  - All nine Rough Heston and ten SPX paper PDFs.
+  - Both active manuscripts inside Wiener_chaos_expansion_pricing.zip:
+    error tables, figure-caption errors, shared-count explanation, path-count
+    tables, and the rough-Heston tail-sampling note.
+  - The ZIP's corresponding 19 figure files.
+
+Original elapsed_seconds_chaos_calibration values are historical timings of the
+original calibration calls, including their original post-fit pricing work.
+They have not been replaced by CPU reevaluation times. Subsequent independent
+evaluation timings are recorded separately. The reported optimization settings
+and actual fitted coefficient vectors are unchanged.
+
+Validation
+
+  - All code cells in the six modified notebooks compile.
+  - Optimization allocations match the pre-change backup in all six notebooks.
+  - Evaluation allocations match optimization allocations in all six notebooks.
+  - All 300 study records agree with their aggregate copies and summary tables.
+  - All fitted coefficients, initial coefficients, optimizer/timing fields, and
+    held-out results match the backup, including the three individual fits.
+  - All 19 affected figure PDFs in the ZIP match the project plot files exactly.
+  - Both active LaTeX versions compile without unresolved references/citations.
+  - ZIP integrity checks and git diff --check pass.
+
+Backup and audit materials
+
+Original inputs and artifacts:
+  .project-backups/before-matched-mc-counts_2026-11-20_15-58-30.zip
+
+Evaluation scripts, execution logs, and summaries:
+  .project-backups/matched-mc-counts-evaluation/
+
+LaTeX build working copy and logs:
+  /tmp/wiener-matched-counts/latex/
+
+Updated archive SHA-256:
+  7b2174b57985dae2a54c7b200350da00ec9dba1448c7f46c978832f5397ad5c6
+
+The earlier latex-consistency-audit.txt is explicitly marked as a historical
+audit of the pre-update archive. Its cover-letter and date-placeholder findings
+were outside this sampling/plot update and remain applicable.
